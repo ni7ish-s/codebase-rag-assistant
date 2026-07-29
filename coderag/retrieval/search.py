@@ -15,7 +15,7 @@ from coderag.types import SearchHit
 
 if TYPE_CHECKING:
     from coderag.retrieval.rerank import Reranker
-    from coderag.store.lance_store import LanceStore
+    from coderag.store.chroma_store import ChromaStore
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ class HybridSearcher:
         self,
         config: Config,
         provider: EmbeddingProvider,
-        store: "LanceStore",
+        store: "ChromaStore",
         reranker: Optional["Reranker"] = None,
     ) -> None:
         self.config = config

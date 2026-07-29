@@ -47,14 +47,15 @@ def get_provider(config: Config) -> EmbeddingProvider:
         from coderag.embeddings.fake_provider import FakeEmbeddingProvider
 
         return FakeEmbeddingProvider()
-    if provider == "fastembed":
-        from coderag.embeddings.fastembed_provider import FastEmbedProvider
+    if provider == "sentence-transformers":
+        from coderag.embeddings.sentence_transformers_provider import (
+            SentenceTransformersProvider,
+        )
 
-        return FastEmbedProvider(
+        return SentenceTransformersProvider(
             config.model,
             cache_dir=config.cache_dir,
             device=config.embed_device,
-            threads=config.embed_threads,
             batch_size=config.embed_batch_size,
         )
     if provider == "openai":
@@ -67,7 +68,7 @@ def get_provider(config: Config) -> EmbeddingProvider:
         )
     raise ValueError(
         f"Unknown embedding provider {config.provider!r}. "
-        "Expected one of: fastembed, openai, fake."
+        "Expected one of: sentence-transformers, openai, fake."
     )
 
 

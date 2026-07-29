@@ -1,6 +1,6 @@
 """Incremental indexing orchestration.
 
-Ties chunking -> embedding -> the LanceDB store together with content-hash change detection.
+Ties chunking -> embedding -> the ChromaDB store together with content-hash change detection.
 The critical correctness property: a changed file's *old* chunks are removed from the store
 **before** the new ones are added (``write_file(..., replace=True)``), so re-saving a file
 never accumulates duplicate or stale rows.
@@ -26,7 +26,7 @@ from coderag.embeddings import EmbeddingProvider
 from coderag.types import Chunk, IndexProgress, IndexStats
 
 if TYPE_CHECKING:
-    from coderag.store.lance_store import LanceStore
+    from coderag.store.chroma_store import ChromaStore
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +89,7 @@ class Indexer:
         self,
         config: Config,
         provider: EmbeddingProvider,
-        store: "LanceStore",
+        store: "ChromaStore",
     ) -> None:
         self.config = config
         self.provider = provider

@@ -21,7 +21,7 @@ import re
 from typing import TYPE_CHECKING, List, Mapping, Sequence
 
 if TYPE_CHECKING:
-    from coderag.store.lance_store import LanceStore
+    from coderag.store.chroma_store import ChromaStore
 
 # A bare identifier used as a call target, e.g. ``do_thing(`` (≥3 chars). The store's symbol
 # index only holds names the repo defines, so language builtins (len, str, …) never resolve.
@@ -44,7 +44,7 @@ def called_names(text: str) -> List[str]:
 
 
 def neighbor_ids(
-    store: "LanceStore",
+    store: "ChromaStore",
     seed_ids: Sequence[int],
     seed_texts: Mapping[int, str],
     *,

@@ -27,7 +27,7 @@ keywords = [
     "llm",
 ]
 dependencies = [
-    "lancedb>=0.33,<1",
+    "chromadb>=0.33,<1",
     "pylance>=0.10",
     "pyarrow>=16,<25",
     "numpy>=2.4.6,<3",

@@ -1,1 +1,1 @@
-"""Persistent storage: a single embedded LanceDB store (metadata + BM25 + vectors)."""
+"""Persistent storage: a single embedded ChromaDB store (metadata + BM25 + vectors)."""

@@ -1,6 +1,6 @@
 """The public CodeRAG facade — the one object every surface (CLI, HTTP, UI) routes through.
 
-Holds the wired-together engine: embedding provider, the LanceDB store (chunk metadata +
+Holds the wired-together engine: embedding provider, the ChromaDB store (chunk metadata +
 text/BM25 + vectors/ANN in one place), the indexer, and the hybrid searcher. Collaborators
 are built lazily so constructing a ``CodeRAG`` is cheap and importing this module pulls in no
 heavy dependencies.
@@ -21,7 +21,7 @@ if TYPE_CHECKING:  # avoid import-time cost / cycles
     from coderag.embeddings import EmbeddingProvider
     from coderag.indexer import Indexer
     from coderag.retrieval.search import HybridSearcher
-    from coderag.store.lance_store import LanceStore
+    from coderag.store.chroma_store import ChromaStore
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class CodeRAG:
     def __init__(self, config: Optional[Config] = None) -> None:
         self.config = config or Config.from_env()
         self._provider: Optional["EmbeddingProvider"] = None
-        self._store: Optional["LanceStore"] = None
+        self._store: Optional["ChromaStore"] = None
         self._indexer: Optional["Indexer"] = None
         self._searcher: Optional["HybridSearcher"] = None
         # Serializes all indexing/deletion so concurrent writers (the CLI, the HTTP
@@ -42,7 +42,7 @@ class CodeRAG:
         # Guards the lazy construction of the collaborators below. The MCP server now serves
         # the protocol before warm-up finishes, so a query can land while the background
         # bootstrap is still building the store/provider — without this lock two threads could
-        # each construct a second (conflicting) LanceStore. Reentrant because the properties
+        # each construct a second (conflicting) ChromaStore. Reentrant because the properties
         # depend on each other (e.g. ``store`` reads ``provider`` while holding the lock).
         self._build_lock = threading.RLock()
 
@@ -59,14 +59,14 @@ class CodeRAG:
         return self._provider
 
     @property
-    def store(self) -> "LanceStore":
+    def store(self) -> "ChromaStore":
         if self._store is None:
-            from coderag.store.lance_store import LanceStore
+            from coderag.store.chroma_store import ChromaStore
 
             with self._build_lock:
                 if self._store is None:
                     self.config.store_dir.mkdir(parents=True, exist_ok=True)
-                    store = LanceStore(self.config.store_dir, self.provider.dim)
+                    store = ChromaStore(self.config.store_dir, self.provider.dim)
                     # Clears the store when the embedding model/dim changed; a re-index then
                     # repopulates the now-empty tables (no separate cache to rebuild).
                     store.bootstrap(self.provider.dim, self.provider.model_id)
@@ -201,7 +201,7 @@ class CodeRAG:
         Done at server startup so the first query — and the demo UI's search-speed
         badge — reflect warm performance, not the one-off lazy load. A real search is
         run (not just an embed) because the store's vector/FTS/scalar indexes and
-        LanceDB's query path are loaded lazily on first use; warming only the model
+        ChromaDB's query path are loaded lazily on first use; warming only the model
         leaves that cold-load to land on the first user query, where it shows up as a
         large ``store_ms``. Best-effort: warm-up failures must not block startup.
         """

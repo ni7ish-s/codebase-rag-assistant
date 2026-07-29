@@ -138,7 +138,7 @@ class Config:
     """Immutable configuration for an indexing/search session."""
 
     # --- Embedding provider ---
-    provider: str = "fastembed"  # "fastembed" | "openai" | "fake"
+    provider: str = "sentence-transformers"  # "sentence-transformers" | "openai" | "fake"
     model: str = "BAAI/bge-small-en-v1.5"
     openai_model: str = "text-embedding-3-small"
     # Secret: kept out of repr() so it can't leak into logs/tracebacks (see M1).
@@ -226,7 +226,7 @@ class Config:
     # --- Indexing throughput ---
     embed_batch_size: int = 64
     index_workers: int = 4
-    # Embedding device for the local (fastembed) provider. "auto" uses a CUDA GPU when
+   # Embedding device for the local (sentence-transformers) provider. "auto" uses a CUDA GPU when
     # onnxruntime exposes one (10-50x faster indexing) and falls back to CPU otherwise;
     # "cpu"/"cuda" force it. A missing/broken GPU always degrades to CPU rather than failing.
     embed_device: str = "auto"  # "auto" | "cpu" | "cuda"

@@ -1,9 +1,9 @@
-"""Tests for the LanceDB store — the single backend (metadata + BM25 + vectors)."""
+"""Tests for the ChromaDB store — the single backend (metadata + BM25 + vectors)."""
 
 from __future__ import annotations
 
 from coderag.embeddings.fake_provider import FakeEmbeddingProvider
-from coderag.store.lance_store import LanceStore
+from coderag.store.chroma_store import ChromaStore
 from coderag.types import Chunk
 
 
@@ -20,7 +20,7 @@ def _chunk(text: str, sym: str = "f", kind: str = "function", start: int = 1) ->
 
 def _store(tmp_path):
     prov = FakeEmbeddingProvider()
-    return LanceStore(tmp_path / "store", prov.dim), prov
+    return ChromaStore(tmp_path / "store", prov.dim), prov
 
 
 def _add(st, prov, rel, chunks, *, replace=False, chash="h", mtime=1.0, size=10):
@@ -140,7 +140,7 @@ def test_maybe_reindex_builds_ann_on_incremental_tail(tmp_path):
     that every vector query brute-forced (sub-50ms retrieval -> hundreds of ms). A pass
     over the reindex threshold should (re)build the index and drain the tail.
     """
-    from coderag.store.lance_store import _ANN_MIN_ROWS
+    from coderag.store.chroma_store import _ANN_MIN_ROWS
 
     st, prov = _store(tmp_path)
     # Index past the ANN minimum without ever calling optimize() (a watcher session).
@@ -153,21 +153,21 @@ def test_maybe_reindex_builds_ann_on_incremental_tail(tmp_path):
     st.flush()
 
     # No ANN index yet -> brute-force.
-    assert st.index_kind == "lancedb"
+    assert st.index_kind == "chromadb"
     assert st._vector_index_stats(st._db.open_table("chunks")) is None
 
     assert st.maybe_reindex() is True
-    assert st.index_kind == "lancedb-ann"
+    assert st.index_kind == "chromadb-ann"
     indexed, unindexed = st._vector_index_stats(st._db.open_table("chunks"))
     assert indexed == st.total_chunks() and unindexed == 0
 
     # No new rows -> cheap no-op, index stays.
     assert st.maybe_reindex() is False
-    assert st.index_kind == "lancedb-ann"
+    assert st.index_kind == "chromadb-ann"
 
     # State is recovered from disk on reopen (not just in-memory).
-    reopened = LanceStore(tmp_path / "store", prov.dim)
-    assert reopened.index_kind == "lancedb-ann"
+    reopened = ChromaStore(tmp_path / "store", prov.dim)
+    assert reopened.index_kind == "chromadb-ann"
 
 
 def test_clear_empties_store(tmp_path):
