@@ -56,15 +56,15 @@ python -m reporag.surfaces.cli serve
 
 **Index status**
 
-(screenshot here)
+<img width="500" alt="ss1" src="https://github.com/user-attachments/assets/bfe9d40b-51e0-48f3-a3de-075e2a8d1365" />
 
 **Search with generated answer**
 
-(screenshot here)
+<img width="500" alt="ss2" src="https://github.com/user-attachments/assets/04303a46-3a51-4b3f-83e5-64ea661f1fa6" />
 
 **FastAPI Swagger UI**
 
-(screenshot here)
+<img width="500" alt="ss3" src="https://github.com/user-attachments/assets/9ccffa36-58ec-40e4-a23f-c7cbc80bf0d7" />
 
 ## Credits
 
