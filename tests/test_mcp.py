@@ -16,9 +16,9 @@ import pytest
 
 pytest.importorskip("mcp")  # skip the whole module if the [mcp] extra isn't installed
 
-from coderag.api import CodeRAG  # noqa: E402
-from coderag.config import Config  # noqa: E402
-from coderag.surfaces.mcp_server import _State, _warm_up, build_mcp  # noqa: E402
+from reporag.api import CodeRAG  # noqa: E402
+from reporag.config import Config  # noqa: E402
+from reporag.surfaces.mcp_server import _State, _warm_up, build_mcp  # noqa: E402
 from tests.conftest import write  # noqa: E402
 
 DEMO = {
@@ -258,7 +258,7 @@ def test_warm_up_is_safe(tmp_path):
 
 def test_notify_keeps_stdout_clean(capsys):
     # Lifecycle messages must go to stderr only — stdout is the stdio MCP wire protocol.
-    from coderag.surfaces.mcp_server import _notify
+    from reporag.surfaces.mcp_server import _notify
 
     _notify("indexing started")
     captured = capsys.readouterr()

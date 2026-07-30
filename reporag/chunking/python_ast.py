@@ -10,7 +10,7 @@ from __future__ import annotations
 import ast
 from typing import List, cast
 
-from coderag.chunking.base import SymbolSpan
+from reporag.chunking.base import SymbolSpan
 
 
 def extract_spans(text: str) -> List[SymbolSpan]:

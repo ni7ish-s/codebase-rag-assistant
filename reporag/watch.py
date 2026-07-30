@@ -16,10 +16,10 @@ from typing import TYPE_CHECKING, Optional, Set
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 
-from coderag.chunking.languages import detect_language
+from reporag.chunking.languages import detect_language
 
 if TYPE_CHECKING:
-    from coderag.api import CodeRAG
+    from reporag.api import CodeRAG
 
 logger = logging.getLogger(__name__)
 

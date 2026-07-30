@@ -29,9 +29,9 @@ from fnmatch import fnmatch
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 
-from coderag._ignore import walk_files
-from coderag._lines import split_lines
-from coderag.config import DEFAULT_IGNORE_GLOBS
+from reporag._ignore import walk_files
+from reporag._lines import split_lines
+from reporag.config import DEFAULT_IGNORE_GLOBS
 
 DEFAULT_LIMIT = 50
 _RG_BATCH = 400  # files per ripgrep invocation, to stay under arg-length limits

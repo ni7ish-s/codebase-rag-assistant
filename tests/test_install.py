@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from coderag import install as inst
+from reporag import install as inst
 
 
 @pytest.fixture

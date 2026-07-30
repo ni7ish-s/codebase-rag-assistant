@@ -20,7 +20,7 @@ import re
 from typing import TYPE_CHECKING, Tuple
 
 if TYPE_CHECKING:
-    from coderag.config import Config
+    from reporag.config import Config
 
 # Query-wide signals, both linear (disjoint character classes — no catastrophic backtracking
 # on the user-supplied query string): a `backtick`-quoted span, or a call ``word(``.

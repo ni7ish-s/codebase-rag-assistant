@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from coderag.api import CodeRAG
-from coderag.config import Config
-from coderag.retrieval.graph import called_names, neighbor_ids
+from reporag.api import CodeRAG
+from reporag.config import Config
+from reporag.retrieval.graph import called_names, neighbor_ids
 from tests.conftest import write
 
 # A callee definition and a seed function that *calls* it. The query words appear only in

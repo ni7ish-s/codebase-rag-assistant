@@ -12,7 +12,7 @@ from typing import Protocol, Sequence, runtime_checkable
 
 import numpy as np
 
-from coderag.config import Config
+from reporag.config import Config
 
 
 @runtime_checkable
@@ -44,11 +44,11 @@ def get_provider(config: Config) -> EmbeddingProvider:
     """
     provider = config.provider.lower()
     if provider == "fake":
-        from coderag.embeddings.fake_provider import FakeEmbeddingProvider
+        from reporag.embeddings.fake_provider import FakeEmbeddingProvider
 
         return FakeEmbeddingProvider()
     if provider == "sentence-transformers":
-        from coderag.embeddings.sentence_transformers_provider import (
+        from reporag.embeddings.sentence_transformers_provider import (
             SentenceTransformersProvider,
         )
 
@@ -59,7 +59,7 @@ def get_provider(config: Config) -> EmbeddingProvider:
             batch_size=config.embed_batch_size,
         )
     if provider == "openai":
-        from coderag.embeddings.openai_provider import OpenAIEmbeddingProvider
+        from reporag.embeddings.openai_provider import OpenAIEmbeddingProvider
 
         return OpenAIEmbeddingProvider(
             model=config.openai_model,

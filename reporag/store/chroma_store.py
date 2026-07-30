@@ -21,8 +21,8 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
-from coderag.retrieval.fusion import reciprocal_rank_fusion
-from coderag.types import Chunk, IndexStats, SearchHit
+from reporag.retrieval.fusion import reciprocal_rank_fusion
+from reporag.types import Chunk, IndexStats, SearchHit
 
 logger = logging.getLogger(__name__)
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from coderag.embeddings.models import (
+from reporag.embeddings.models import (
     RECOMMENDED,
     RECOMMENDED_RERANKERS,
     format_models,

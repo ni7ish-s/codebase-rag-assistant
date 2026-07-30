@@ -6,16 +6,16 @@ import logging
 import time
 from typing import TYPE_CHECKING, Dict, List, Optional
 
-from coderag.config import Config
-from coderag.embeddings import EmbeddingProvider
-from coderag.retrieval.fusion import reciprocal_rank_fusion
-from coderag.retrieval.graph import neighbor_ids
-from coderag.retrieval.query_type import fusion_weights
-from coderag.types import SearchHit
+from reporag.config import Config
+from reporag.embeddings import EmbeddingProvider
+from reporag.retrieval.fusion import reciprocal_rank_fusion
+from reporag.retrieval.graph import neighbor_ids
+from reporag.retrieval.query_type import fusion_weights
+from reporag.types import SearchHit
 
 if TYPE_CHECKING:
-    from coderag.retrieval.rerank import Reranker
-    from coderag.store.chroma_store import ChromaStore
+    from reporag.retrieval.rerank import Reranker
+    from reporag.store.chroma_store import ChromaStore
 
 logger = logging.getLogger(__name__)
 

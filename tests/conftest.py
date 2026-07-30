@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from coderag.config import Config
+from reporag.config import Config
 
 
 @pytest.fixture

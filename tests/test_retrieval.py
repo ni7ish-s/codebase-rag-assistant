@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from coderag.api import CodeRAG
-from coderag.retrieval.fusion import reciprocal_rank_fusion
+from reporag.api import CodeRAG
+from reporag.retrieval.fusion import reciprocal_rank_fusion
 from tests.conftest import write
 
 

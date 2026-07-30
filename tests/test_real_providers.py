@@ -11,7 +11,7 @@ import types
 import numpy as np
 import pytest
 
-from coderag.embeddings.openai_provider import OpenAIEmbeddingProvider
+from reporag.embeddings.openai_provider import OpenAIEmbeddingProvider
 
 
 def test_openai_provider_batches_without_averaging(monkeypatch):
@@ -47,7 +47,7 @@ def test_openai_known_dim_without_network():
 
 @pytest.mark.integration
 def test_fastembed_end_to_end():
-    from coderag.embeddings.fastembed_provider import FastEmbedProvider
+    from reporag.embeddings.fastembed_provider import FastEmbedProvider
 
     provider = FastEmbedProvider()
     assert provider.dim == 384

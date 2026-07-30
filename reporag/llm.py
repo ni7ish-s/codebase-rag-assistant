@@ -18,11 +18,11 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Iterator, List
 
-from coderag.config import Config
-from coderag.types import SearchHit
+from reporag.config import Config
+from reporag.types import SearchHit
 
 if TYPE_CHECKING:
-    from coderag.api import CodeRAG
+    from reporag.api import CodeRAG
 
 logger = logging.getLogger(__name__)
 

@@ -13,9 +13,9 @@ from __future__ import annotations
 import logging
 from typing import List
 
-from coderag.chunking import base, languages
-from coderag.config import Config
-from coderag.types import Chunk
+from reporag.chunking import base, languages
+from reporag.config import Config
+from reporag.types import Chunk
 
 logger = logging.getLogger(__name__)
 
@@ -27,11 +27,11 @@ def chunk_file(text: str, language: str, config: Config) -> List[Chunk]:
     spans = []
     try:
         if language == languages.PYTHON:
-            from coderag.chunking import python_ast
+            from reporag.chunking import python_ast
 
             spans = python_ast.extract_spans(text)
         elif language in languages.TREE_SITTER_LANGUAGES:
-            from coderag.chunking import treesitter
+            from reporag.chunking import treesitter
 
             spans = treesitter.extract_spans(text, language)
     except Exception as exc:  # SyntaxError, tree-sitter issues, etc.

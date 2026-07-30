@@ -18,15 +18,15 @@ from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Tuple
 
 import numpy as np
 
-from coderag._ignore import ignore_dir_names, is_ignored, walk_files
-from coderag.chunking import chunk_file
-from coderag.chunking.languages import detect_language
-from coderag.config import Config
-from coderag.embeddings import EmbeddingProvider
-from coderag.types import Chunk, IndexProgress, IndexStats
+from reporag._ignore import ignore_dir_names, is_ignored, walk_files
+from reporag.chunking import chunk_file
+from reporag.chunking.languages import detect_language
+from reporag.config import Config
+from reporag.embeddings import EmbeddingProvider
+from reporag.types import Chunk, IndexProgress, IndexStats
 
 if TYPE_CHECKING:
-    from coderag.store.chroma_store import ChromaStore
+    from reporag.store.chroma_store import ChromaStore
 
 logger = logging.getLogger(__name__)
 

@@ -16,9 +16,9 @@ pytest.importorskip("pygments")
 
 from fastapi.testclient import TestClient  # noqa: E402
 
-from coderag.api import CodeRAG  # noqa: E402
-from coderag.config import Config  # noqa: E402
-from coderag.surfaces.webui import create_ui_app  # noqa: E402
+from reporag.api import CodeRAG  # noqa: E402
+from reporag.config import Config  # noqa: E402
+from reporag.surfaces.webui import create_ui_app  # noqa: E402
 from tests.conftest import write  # noqa: E402
 
 

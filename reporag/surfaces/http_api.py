@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from fastapi import FastAPI
 
-    from coderag.api import CodeRAG
+    from reporag.api import CodeRAG
 
 logger = logging.getLogger(__name__)
 

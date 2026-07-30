@@ -6,8 +6,8 @@ import json
 
 import pytest
 
-from coderag.api import CodeRAG
-from coderag.surfaces.cli import main as cli_main
+from reporag.api import CodeRAG
+from reporag.surfaces.cli import main as cli_main
 from tests.conftest import write
 
 
@@ -93,10 +93,10 @@ def test_cli_eval_graph(repo_with_code, tmp_path, capsys):
 def test_http_api_search_and_status(repo_with_code):
     from fastapi.testclient import TestClient
 
-    from coderag.surfaces.http_api import create_app
+    from reporag.surfaces.http_api import create_app
 
     repo, store, _ = repo_with_code
-    from coderag.config import Config
+    from reporag.config import Config
 
     cr = CodeRAG(Config(provider="fake", watched_dir=repo, store_dir=store))
     cr.index()
@@ -121,8 +121,8 @@ def test_http_api_search_and_status(repo_with_code):
 def test_http_index_endpoint(repo_with_code):
     from fastapi.testclient import TestClient
 
-    from coderag.config import Config
-    from coderag.surfaces.http_api import create_app
+    from reporag.config import Config
+    from reporag.surfaces.http_api import create_app
 
     repo, store, _ = repo_with_code
     cr = CodeRAG(Config(provider="fake", watched_dir=repo, store_dir=store))
@@ -136,8 +136,8 @@ def test_http_index_endpoint(repo_with_code):
 
 
 def test_watcher_apply_handles_edit_and_delete(repo_with_code):
-    from coderag.config import Config
-    from coderag.watch import _apply
+    from reporag.config import Config
+    from reporag.watch import _apply
 
     repo, store, _ = repo_with_code
     cr = CodeRAG(Config(provider="fake", watched_dir=repo, store_dir=store))
@@ -165,7 +165,7 @@ def test_watcher_handler_collects_only_code_paths():
         FileMovedEvent,
     )
 
-    from coderag.watch import _Handler
+    from reporag.watch import _Handler
 
     pending: set = set()
     handler = _Handler(pending, threading.Lock())
@@ -184,8 +184,8 @@ def test_watcher_handler_collects_only_code_paths():
 def test_http_api_requires_key_when_configured(repo_with_code):
     from fastapi.testclient import TestClient
 
-    from coderag.config import Config
-    from coderag.surfaces.http_api import create_app
+    from reporag.config import Config
+    from reporag.surfaces.http_api import create_app
 
     repo, store, _ = repo_with_code
     cr = CodeRAG(
@@ -224,8 +224,8 @@ def test_http_api_requires_key_when_configured(repo_with_code):
 def test_file_endpoint_serves_only_indexed_files(repo_with_code):
     from fastapi.testclient import TestClient
 
-    from coderag.config import Config
-    from coderag.surfaces.http_api import create_app
+    from reporag.config import Config
+    from reporag.surfaces.http_api import create_app
 
     repo, store, _ = repo_with_code
     cr = CodeRAG(Config(provider="fake", watched_dir=repo, store_dir=store))
@@ -242,8 +242,8 @@ def test_file_endpoint_serves_only_indexed_files(repo_with_code):
 def test_cors_is_disabled_by_default(repo_with_code):
     from fastapi.testclient import TestClient
 
-    from coderag.config import Config
-    from coderag.surfaces.http_api import create_app
+    from reporag.config import Config
+    from reporag.surfaces.http_api import create_app
 
     repo, store, _ = repo_with_code
     cr = CodeRAG(Config(provider="fake", watched_dir=repo, store_dir=store))

@@ -11,7 +11,7 @@ import shutil
 
 import pytest
 
-from coderag.fs_search import search_files
+from reporag.fs_search import search_files
 from tests.conftest import write
 
 

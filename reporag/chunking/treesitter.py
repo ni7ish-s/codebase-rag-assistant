@@ -13,7 +13,7 @@ import warnings
 from functools import lru_cache
 from typing import Any, Callable, List, Set
 
-from coderag.chunking.base import SymbolSpan
+from reporag.chunking.base import SymbolSpan
 
 logger = logging.getLogger(__name__)
 

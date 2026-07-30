@@ -15,9 +15,9 @@ import time
 from pathlib import Path
 from typing import List, Optional
 
-from coderag import __version__
-from coderag.api import CodeRAG
-from coderag.config import Config
+from reporag import __version__
+from reporag.api import CodeRAG
+from reporag.config import Config
 
 
 def _build_config(args: argparse.Namespace) -> Config:
@@ -85,7 +85,7 @@ def cmd_search(args: argparse.Namespace) -> int:
 
 
 def _print_answer(cr: CodeRAG, query: str, k: int) -> None:
-    from coderag.llm import stream_answer
+    from reporag.llm import stream_answer
 
     print("\n--- Answer ---")
     try:
@@ -104,20 +104,20 @@ def cmd_status(args: argparse.Namespace) -> int:
 
 
 def cmd_eval(args: argparse.Namespace) -> int:
-    from coderag import eval as ev
+    from reporag import eval as ev
 
     cfg = _build_config(args)
 
     # `coderag eval --list-models` — show recommended local embedding models.
     if args.list_models:
-        from coderag.embeddings.models import format_models
+        from reporag.embeddings.models import format_models
 
         print(format_models())
         return 0
 
     # `coderag eval build` — mine a dataset from the repo's git history.
     if args.build:
-        from coderag.chunking.languages import extensions_for
+        from reporag.chunking.languages import extensions_for
 
         cases = ev.build_from_git(
             cfg.watched_dir,
@@ -152,7 +152,7 @@ def cmd_eval(args: argparse.Namespace) -> int:
     if args.compare:
         reranker = None
         if args.rerank:
-            from coderag.retrieval.rerank import get_reranker
+            from reporag.retrieval.rerank import get_reranker
 
             reranker = get_reranker(cfg)
         results = ev.compare_modes(
@@ -181,7 +181,7 @@ def cmd_eval(args: argparse.Namespace) -> int:
     if args.json:
         print(json.dumps([r.as_dict() for r in results], indent=2))
     else:
-        from coderag.eval.harness import format_table
+        from reporag.eval.harness import format_table
 
         print(f"Eval: {len(cases)} case(s), level={args.level}\n")
         print(format_table(results))
@@ -189,7 +189,7 @@ def cmd_eval(args: argparse.Namespace) -> int:
 
 
 def cmd_watch(args: argparse.Namespace) -> int:
-    from coderag.watch import watch
+    from reporag.watch import watch
 
     cr = CodeRAG(_build_config(args))
     print(f"Indexing {cr.config.watched_dir} before watching...")
@@ -200,7 +200,7 @@ def cmd_watch(args: argparse.Namespace) -> int:
 
 def cmd_serve(args: argparse.Namespace) -> int:
     try:
-        from coderag.surfaces.http_api import run_server
+        from reporag.surfaces.http_api import run_server
     except ImportError:
         print(
             "The HTTP server needs extra deps. Install with: pip install 'coderag[server]'"
@@ -213,7 +213,7 @@ def cmd_serve(args: argparse.Namespace) -> int:
 
 def cmd_mcp(args: argparse.Namespace) -> int:
     try:
-        from coderag.surfaces.mcp_server import run_mcp
+        from reporag.surfaces.mcp_server import run_mcp
     except ImportError:
         print(
             "The MCP server needs extra deps. Install with: pip install 'coderag[mcp]'"
@@ -245,7 +245,7 @@ _NEXT_STEPS = {
 
 def cmd_install(args: argparse.Namespace) -> int:
     """Register CodeRAG's MCP server in an AI agent (Claude Code, Hermes, Codex)."""
-    from coderag import install as inst
+    from reporag import install as inst
 
     default_watched = (
         Path(args.watched_dir).expanduser()
@@ -346,7 +346,7 @@ def cmd_install(args: argparse.Namespace) -> int:
 
 def cmd_ui(args: argparse.Namespace) -> int:
     try:
-        from coderag.surfaces.webui import run_ui
+        from reporag.surfaces.webui import run_ui
     except ImportError:
         print("The web UI needs extra deps. Install with: pip install 'coderag[ui]'")
         return 1

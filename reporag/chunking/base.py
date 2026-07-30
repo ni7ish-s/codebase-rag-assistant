@@ -13,9 +13,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Optional, Sequence
 
-from coderag._lines import split_lines
-from coderag.config import Config
-from coderag.types import Chunk
+from reporag._lines import split_lines
+from reporag.config import Config
+from reporag.types import Chunk
 
 
 @dataclass(slots=True)

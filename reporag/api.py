@@ -13,15 +13,15 @@ import threading
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, List, Optional, Union
 
-from coderag._lines import split_lines
-from coderag.config import Config
-from coderag.types import IndexProgress, IndexStats, SearchHit
+from reporag._lines import split_lines
+from reporag.config import Config
+from reporag.types import IndexProgress, IndexStats, SearchHit
 
 if TYPE_CHECKING:  # avoid import-time cost / cycles
-    from coderag.embeddings import EmbeddingProvider
-    from coderag.indexer import Indexer
-    from coderag.retrieval.search import HybridSearcher
-    from coderag.store.chroma_store import ChromaStore
+    from reporag.embeddings import EmbeddingProvider
+    from reporag.indexer import Indexer
+    from reporag.retrieval.search import HybridSearcher
+    from reporag.store.chroma_store import ChromaStore
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ class CodeRAG:
     @property
     def provider(self) -> "EmbeddingProvider":
         if self._provider is None:
-            from coderag.embeddings import get_provider
+            from reporag.embeddings import get_provider
 
             with self._build_lock:
                 if self._provider is None:
@@ -61,7 +61,7 @@ class CodeRAG:
     @property
     def store(self) -> "ChromaStore":
         if self._store is None:
-            from coderag.store.chroma_store import ChromaStore
+            from reporag.store.chroma_store import ChromaStore
 
             with self._build_lock:
                 if self._store is None:
@@ -76,7 +76,7 @@ class CodeRAG:
     @property
     def indexer(self) -> "Indexer":
         if self._indexer is None:
-            from coderag.indexer import Indexer
+            from reporag.indexer import Indexer
 
             with self._build_lock:
                 if self._indexer is None:
@@ -86,8 +86,8 @@ class CodeRAG:
     @property
     def searcher(self) -> "HybridSearcher":
         if self._searcher is None:
-            from coderag.retrieval.rerank import get_reranker
-            from coderag.retrieval.search import HybridSearcher
+            from reporag.retrieval.rerank import get_reranker
+            from reporag.retrieval.search import HybridSearcher
 
             with self._build_lock:
                 if self._searcher is None:
@@ -129,7 +129,7 @@ class CodeRAG:
         configured ``watched_dir`` and ``ignore_globs`` so it sees exactly the same
         files the indexer does. See that function for the keyword arguments.
         """
-        from coderag.fs_search import search_files
+        from reporag.fs_search import search_files
 
         return search_files(
             self.config.watched_dir,

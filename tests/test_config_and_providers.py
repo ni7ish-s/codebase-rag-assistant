@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from coderag.config import Config
-from coderag.embeddings import EmbeddingProvider, get_provider
+from reporag.config import Config
+from reporag.embeddings import EmbeddingProvider, get_provider
 
 
 def test_config_defaults_and_derived_paths(tmp_path):
@@ -84,7 +84,7 @@ def test_from_env_ignores_bad_ints(monkeypatch):
 
 
 def test_env_ignore_globs_append_to_defaults(monkeypatch):
-    from coderag.config import DEFAULT_IGNORE_GLOBS
+    from reporag.config import DEFAULT_IGNORE_GLOBS
 
     monkeypatch.setenv("CODERAG_IGNORE_GLOBS", "secret/*, *.bin")
     cfg = Config.from_env()
@@ -93,7 +93,7 @@ def test_env_ignore_globs_append_to_defaults(monkeypatch):
 
 
 def test_default_ignores_cover_dependency_and_cache_dirs():
-    from coderag.config import DEFAULT_IGNORE_GLOBS
+    from reporag.config import DEFAULT_IGNORE_GLOBS
 
     for junk in ("site-packages/*", ".cache/*", "node_modules/*", "target/*"):
         assert junk in DEFAULT_IGNORE_GLOBS

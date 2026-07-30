@@ -8,9 +8,9 @@ import warnings
 
 import pytest
 
-from coderag.chunking import chunk_file, treesitter
-from coderag.chunking.languages import TREE_SITTER_LANGUAGES, detect_language
-from coderag.config import Config
+from reporag.chunking import chunk_file, treesitter
+from reporag.chunking.languages import TREE_SITTER_LANGUAGES, detect_language
+from reporag.config import Config
 
 CFG = Config(provider="fake", window_lines=10, window_overlap=2, max_chunk_lines=50)
 

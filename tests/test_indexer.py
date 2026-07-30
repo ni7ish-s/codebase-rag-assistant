@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from coderag.api import CodeRAG
-from coderag.types import IndexProgress
+from reporag.api import CodeRAG
+from reporag.types import IndexProgress
 from tests.conftest import write
 
 

@@ -8,11 +8,11 @@ from __future__ import annotations
 
 from typing import List, Sequence
 
-from coderag.api import CodeRAG
-from coderag.config import Config
-from coderag.eval import EvalCase, compare_modes
-from coderag.retrieval.rerank import get_reranker
-from coderag.retrieval.search import HybridSearcher
+from reporag.api import CodeRAG
+from reporag.config import Config
+from reporag.eval import EvalCase, compare_modes
+from reporag.retrieval.rerank import get_reranker
+from reporag.retrieval.search import HybridSearcher
 from tests.conftest import write
 
 

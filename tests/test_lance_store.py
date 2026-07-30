@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from coderag.embeddings.fake_provider import FakeEmbeddingProvider
-from coderag.store.chroma_store import ChromaStore
-from coderag.types import Chunk
+from reporag.embeddings.fake_provider import FakeEmbeddingProvider
+from reporag.store.chroma_store import ChromaStore
+from reporag.types import Chunk
 
 
 def _chunk(text: str, sym: str = "f", kind: str = "function", start: int = 1) -> Chunk:
@@ -140,7 +140,7 @@ def test_maybe_reindex_builds_ann_on_incremental_tail(tmp_path):
     that every vector query brute-forced (sub-50ms retrieval -> hundreds of ms). A pass
     over the reindex threshold should (re)build the index and drain the tail.
     """
-    from coderag.store.chroma_store import _ANN_MIN_ROWS
+    from reporag.store.chroma_store import _ANN_MIN_ROWS
 
     st, prov = _store(tmp_path)
     # Index past the ANN minimum without ever calling optimize() (a watcher session).

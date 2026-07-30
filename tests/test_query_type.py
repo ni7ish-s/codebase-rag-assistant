@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from coderag.api import CodeRAG
-from coderag.retrieval.query_type import (
+from reporag.api import CodeRAG
+from reporag.retrieval.query_type import (
     fusion_weights,
     looks_like_identifier,
     references_identifier,

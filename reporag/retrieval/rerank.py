@@ -16,7 +16,7 @@ from functools import cached_property
 from pathlib import Path
 from typing import Any, List, Optional, Protocol, Sequence, runtime_checkable
 
-from coderag.config import Config
+from reporag.config import Config
 
 logger = logging.getLogger(__name__)
 

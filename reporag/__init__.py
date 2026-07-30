@@ -14,13 +14,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from coderag.config import Config
+from reporag.config import Config
 
 if TYPE_CHECKING:
     # Re-exported lazily at runtime via __getattr__ below (keeps ``import coderag``
     # light — no chromadb/fastembed pulled in at import). Declared here only so type
     # checkers and static analysis see ``CodeRAG`` as a defined export of __all__.
-    from coderag.api import CodeRAG
+    from reporag.api import CodeRAG
 
 __version__ = "1.0.0"
 
@@ -30,7 +30,7 @@ __all__ = ["CodeRAG", "Config", "__version__"]
 def __getattr__(name: str) -> object:
     # Lazy re-export so ``import coderag`` stays light (no chromadb/fastembed at import).
     if name == "CodeRAG":
-        from coderag.api import CodeRAG
+        from reporag.api import CodeRAG
 
         return CodeRAG
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

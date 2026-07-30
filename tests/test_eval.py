@@ -8,8 +8,8 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from coderag.api import CodeRAG
-from coderag.eval import (
+from reporag.api import CodeRAG
+from reporag.eval import (
     EvalCase,
     build_from_git,
     compare_modes,
@@ -17,14 +17,14 @@ from coderag.eval import (
     load_dataset,
     save_dataset,
 )
-from coderag.eval.harness import (
+from reporag.eval.harness import (
     EvalResult,
     aggregate_by_mode,
     best_label,
     format_table,
     mean_results,
 )
-from coderag.eval.metrics import hit_at_k, mrr, ndcg_at_k, recall_at_k
+from reporag.eval.metrics import hit_at_k, mrr, ndcg_at_k, recall_at_k
 from tests.conftest import write
 
 # --- metrics ---
@@ -248,7 +248,7 @@ def test_mean_results_empty_raises():
 
 
 def test_extensions_for_uses_canonical_map():
-    from coderag.chunking.languages import extensions_for
+    from reporag.chunking.languages import extensions_for
 
     exts = extensions_for(("python", "go"))
     assert ".py" in exts and ".go" in exts

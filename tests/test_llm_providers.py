@@ -11,9 +11,9 @@ import types
 
 import pytest
 
-from coderag import llm
-from coderag.config import Config
-from coderag.types import SearchHit
+from reporag import llm
+from reporag.config import Config
+from reporag.types import SearchHit
 
 
 def _hit() -> SearchHit:

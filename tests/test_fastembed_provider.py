@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from coderag.embeddings.fastembed_provider import FastEmbedProvider
+from reporag.embeddings.fastembed_provider import FastEmbedProvider
 
 
 def _provider(device: str) -> FastEmbedProvider:

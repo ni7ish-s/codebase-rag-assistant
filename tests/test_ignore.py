@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from coderag._ignore import walk_files
-from coderag.config import DEFAULT_IGNORE_GLOBS
+from reporag._ignore import walk_files
+from reporag.config import DEFAULT_IGNORE_GLOBS
 from tests.conftest import write
 
 
@@ -44,8 +44,8 @@ def test_gitignore_can_be_disabled(tmp_path):
 
 def test_indexer_and_fs_search_agree_on_gitignore(tmp_path):
     # The shared-walker invariant: semantic index and exact search see the same files.
-    from coderag.api import CodeRAG
-    from coderag.config import Config
+    from reporag.api import CodeRAG
+    from reporag.config import Config
 
     repo = tmp_path / "repo"
     write(repo / ".gitignore", "ignored/\n*.log\n")
