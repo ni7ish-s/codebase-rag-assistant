@@ -1,4 +1,4 @@
-"""Typed, injectable configuration for CodeRAG.
+"""Typed, injectable configuration for RepoRAG.
 
 The whole app reads configuration from a single immutable :class:`Config` object that
 is built once (usually via :meth:`Config.from_env`) and passed down explicitly. Nothing
@@ -170,7 +170,7 @@ class Config:
     # Index any UTF-8-decodable file as plain text, even with an unknown/absent extension
     # (Dockerfile, Makefile, LICENSE, .log, ...). Off by default so code repos aren't
     # polluted; turn on (REPORAG_INDEX_ALL_TEXT / `reporag mcp --all-text`) to make
-    # CodeRAG a general document/file-directory search engine. Binary files are still
+    # RepoRAG a general document/file-directory search engine. Binary files are still
     # skipped (NUL-byte sniff in the indexer).
     index_all_text: bool = False
     max_file_bytes: int = 1_000_000  # skip files larger than this

@@ -1,6 +1,6 @@
 """Curated registry of local (fastembed/ONNX) embedding models for code search.
 
-These are the no-API-key models worth considering for CodeRAG, with short notes on the
+These are the no-API-key models worth considering for RepoRAG, with short notes on the
 accuracy/size trade-off. All are loadable via ``--model <name>`` (provider ``fastembed``).
 The numbers in the notes are external benchmark figures (see docs/research/) — run
 ``reporag eval`` to measure them on *your* codebase.

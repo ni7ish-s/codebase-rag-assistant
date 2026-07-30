@@ -1,7 +1,7 @@
 """Pluggable embedding providers.
 
 A provider turns text into L2-comparable float32 vectors. The crucial contract change
-from the old CodeRAG: providers embed a *list of already-chunked texts* and return one
+from the old RepoRAG: providers embed a *list of already-chunked texts* and return one
 vector per text — there is no file-level averaging anywhere. The embedding dimension is a
 property of the provider (and its model), never a hard-coded constant.
 """

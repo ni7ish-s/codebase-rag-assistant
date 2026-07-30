@@ -1,6 +1,6 @@
 """Exact filesystem search — the regex/glob complement to semantic ``search_code``.
 
-CodeRAG's hybrid index is great at "find this by *meaning*", but an agent still needs
+RepoRAG's hybrid index is great at "find this by *meaning*", but an agent still needs
 the other half of the job: "find every literal ``raise TimeoutError``", "list the files
 matching ``*_test.py``". That is exactly what coding agents otherwise shell out to
 ``grep``/``rg``/``find`` for. This module gives them an in-process, ignore-aware exact
@@ -8,7 +8,7 @@ search instead — modelled on the Hermes agent's ``search_files`` tool (ripgrep
 ``target`` content/files, ``output_mode`` content/files_only/count, context lines,
 pagination, secret redaction).
 
-Design: candidate files are always enumerated in Python, honouring CodeRAG's own
+Design: candidate files are always enumerated in Python, honouring RepoRAG's own
 ``ignore_globs`` via :mod:`reporag._ignore` (so the search sees exactly the same
 workspace the indexer does). When ripgrep is on PATH it scans that explicit file list
 for the content case — a genuine speed-up with *no* divergence in which files are
@@ -216,7 +216,7 @@ def search_files(
     redact: bool = True,
     use_ripgrep: bool = True,
 ) -> Dict:
-    """Exact regex/glob search over the workspace, honouring CodeRAG's ignore rules.
+    """Exact regex/glob search over the workspace, honouring RepoRAG's ignore rules.
 
     Args:
         root: Workspace root to search under.
@@ -227,7 +227,7 @@ def search_files(
         context: Lines of context around each match (content + Python path only).
         limit: Page size (``<= 0`` means no limit).
         offset: Page offset, for paginating large result sets.
-        ignore_globs: Ignore patterns; defaults to CodeRAG's standard set.
+        ignore_globs: Ignore patterns; defaults to RepoRAG's standard set.
         ignore_case: Case-insensitive matching.
         max_file_bytes: Skip files larger than this when scanning content.
         redact: Mask obvious credential values in returned lines.

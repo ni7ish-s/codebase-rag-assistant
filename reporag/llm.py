@@ -1,6 +1,6 @@
 """Optional LLM answer surface — turn retrieved chunks into a grounded, cited answer.
 
-This is intentionally thin and optional: CodeRAG's core value is retrieval. When an LLM
+This is intentionally thin and optional: RepoRAG's core value is retrieval. When an LLM
 backend is configured, ``stream_answer`` composes the top hits into a prompt and streams a
 response; otherwise callers should just show the retrieved chunks.
 
@@ -22,7 +22,7 @@ from reporag.config import Config
 from reporag.types import SearchHit
 
 if TYPE_CHECKING:
-    from reporag.api import CodeRAG
+    from reporag.api import RepoRAG
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +50,7 @@ def build_context(hits: List[SearchHit], max_chars: int = 8000) -> str:
     return "\n\n".join(blocks)
 
 
-def stream_answer(cr: "CodeRAG", query: str, top_k: int | None = None) -> Iterator[str]:
+def stream_answer(cr: "RepoRAG", query: str, top_k: int | None = None) -> Iterator[str]:
     """Yield answer tokens. Raises RuntimeError if no LLM backend is configured."""
     hits = cr.search(query, top_k or cr.config.top_k)
     if not hits:

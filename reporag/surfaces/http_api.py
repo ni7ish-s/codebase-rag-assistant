@@ -1,4 +1,4 @@
-"""Self-hostable HTTP/REST API over a CodeRAG instance (optional ``[server]`` extra).
+"""Self-hostable HTTP/REST API over a RepoRAG instance (optional ``[server]`` extra).
 
 Lets custom apps, remote frontends, or a shared team deployment query a big codebase over
 the network. Endpoints: ``GET /search``, ``POST /index``, ``GET /status``, ``GET /file``.
@@ -24,12 +24,12 @@ from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from fastapi import FastAPI
 
-    from reporag.api import CodeRAG
+    from reporag.api import RepoRAG
 
 logger = logging.getLogger(__name__)
 
 
-def create_app(cr: "CodeRAG") -> "FastAPI":
+def create_app(cr: "RepoRAG") -> "FastAPI":
     from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
     from fastapi.middleware.cors import CORSMiddleware
     from pydantic import BaseModel
@@ -61,7 +61,7 @@ def create_app(cr: "CodeRAG") -> "FastAPI":
             raise HTTPException(status_code=401, detail="Invalid or missing API key")
 
     app = FastAPI(
-        title="CodeRAG",
+        title="RepoRAG",
         version="1.0.0",
         description="Semantic code-search engine.",
         dependencies=[Depends(require_auth)],
@@ -136,12 +136,12 @@ def _is_public_host(host: str) -> bool:
         return True  # a hostname — assume it's externally reachable
 
 
-def run_server(cr: "CodeRAG", host: str = "127.0.0.1", port: int = 8000) -> None:
+def run_server(cr: "RepoRAG", host: str = "127.0.0.1", port: int = 8000) -> None:
     import uvicorn
 
     if _is_public_host(host) and not cr.config.api_key:
         logger.warning(
-            "CodeRAG HTTP API is binding to %s with NO API key set. It is "
+            "RepoRAG HTTP API is binding to %s with NO API key set. It is "
             "UNAUTHENTICATED and exposes indexed source and file reads to anyone who "
             "can reach this port. Set REPORAG_API_KEY to require authentication.",
             host,

@@ -1,6 +1,6 @@
 """The ``reporag`` command — index, search, watch, serve, ui, status.
 
-Every subcommand is a thin adapter over :class:`reporag.api.CodeRAG`.
+Every subcommand is a thin adapter over :class:`reporag.api.RepoRAG`.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from reporag import __version__
-from reporag.api import CodeRAG
+from reporag.api import RepoRAG
 from reporag.config import Config
 
 
@@ -39,7 +39,7 @@ def _build_config(args: argparse.Namespace) -> Config:
 
 
 def cmd_index(args: argparse.Namespace) -> int:
-    cr = CodeRAG(_build_config(args))
+    cr = RepoRAG(_build_config(args))
     if not args.quiet:
         # The provider/model loads on first index access; on a fresh install that is a
         # one-off model download. Say so on stderr, so the wait isn't a mystery.
@@ -64,7 +64,7 @@ def cmd_index(args: argparse.Namespace) -> int:
 
 
 def cmd_search(args: argparse.Namespace) -> int:
-    cr = CodeRAG(_build_config(args))
+    cr = RepoRAG(_build_config(args))
     hits = cr.search(args.query, top_k=args.k)
     if args.json:
         print(json.dumps([h.as_dict() for h in hits], indent=2))
@@ -84,7 +84,7 @@ def cmd_search(args: argparse.Namespace) -> int:
     return 0
 
 
-def _print_answer(cr: CodeRAG, query: str, k: int) -> None:
+def _print_answer(cr: RepoRAG, query: str, k: int) -> None:
     from reporag.llm import stream_answer
 
     print("\n--- Answer ---")
@@ -98,7 +98,7 @@ def _print_answer(cr: CodeRAG, query: str, k: int) -> None:
 
 
 def cmd_status(args: argparse.Namespace) -> int:
-    cr = CodeRAG(_build_config(args))
+    cr = RepoRAG(_build_config(args))
     print(json.dumps(cr.status(), indent=2))
     return 0
 
@@ -146,7 +146,7 @@ def cmd_eval(args: argparse.Namespace) -> int:
         cfg = cfg.with_overrides(adaptive_fusion=True)
     if args.graph:
         cfg = cfg.with_overrides(graph_expansion=True)
-    cr = CodeRAG(cfg)
+    cr = RepoRAG(cfg)
     cr.index()  # ensure the index is built / up to date before scoring
 
     if args.compare:
@@ -191,7 +191,7 @@ def cmd_eval(args: argparse.Namespace) -> int:
 def cmd_watch(args: argparse.Namespace) -> int:
     from reporag.watch import watch
 
-    cr = CodeRAG(_build_config(args))
+    cr = RepoRAG(_build_config(args))
     print(f"Indexing {cr.config.watched_dir} before watching...")
     cr.indexer.index(progress=not args.quiet)
     watch(cr)
@@ -206,7 +206,7 @@ def cmd_serve(args: argparse.Namespace) -> int:
             "The HTTP server needs extra deps. Install with: pip install 'reporag[server]'"
         )
         return 1
-    cr = CodeRAG(_build_config(args))
+    cr = RepoRAG(_build_config(args))
     run_server(cr, host=args.host, port=args.port)
     return 0
 
@@ -222,7 +222,7 @@ def cmd_mcp(args: argparse.Namespace) -> int:
     cfg = _build_config(args)
     if args.all_text:
         cfg = cfg.with_overrides(index_all_text=True)
-    cr = CodeRAG(cfg)
+    cr = RepoRAG(cfg)
     run_mcp(
         cr,
         transport=args.transport,
@@ -244,7 +244,7 @@ _NEXT_STEPS = {
 
 
 def cmd_install(args: argparse.Namespace) -> int:
-    """Register CodeRAG's MCP server in an AI agent (Claude Code, Hermes, Codex)."""
+    """Register RepoRAG's MCP server in an AI agent (Claude Code, Hermes, Codex)."""
     from reporag import install as inst
 
     default_watched = (
@@ -330,7 +330,7 @@ def cmd_install(args: argparse.Namespace) -> int:
     wd = next((p.watched_dir for p in plans if p.watched_dir is not None), Path.cwd())
     print("\nHow indexing works:")
     print(
-        "  CodeRAG indexes your workspace the first time the agent starts its server. It\n"
+        "  RepoRAG indexes your workspace the first time the agent starts its server. It\n"
         "  runs in the background, so search works right away and fills in as it goes —\n"
         "  seconds for a repo. Large trees (a whole home/system) are supported too; the\n"
         "  first pass just takes longer. It skips version-control, build, and dependency\n"
@@ -350,7 +350,7 @@ def cmd_ui(args: argparse.Namespace) -> int:
     except ImportError:
         print("The web UI needs extra deps. Install with: pip install 'reporag[ui]'")
         return 1
-    cr = CodeRAG(_build_config(args))
+    cr = RepoRAG(_build_config(args))
     host = args.host or os.getenv("REPORAG_UI_HOST") or "127.0.0.1"
     port = args.port if args.port is not None else _env_port("REPORAG_UI_PORT", 8501)
     run_ui(cr, host=host, port=port)
@@ -533,7 +533,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_install = sub.add_parser(
         "install",
-        help="Register CodeRAG's MCP server in an AI agent (Claude Code, Hermes, Codex) "
+        help="Register RepoRAG's MCP server in an AI agent (Claude Code, Hermes, Codex) "
         "— one command instead of hand-editing config.",
     )
     p_install.add_argument(

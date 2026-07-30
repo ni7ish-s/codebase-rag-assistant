@@ -19,7 +19,7 @@ from watchdog.observers import Observer
 from reporag.chunking.languages import detect_language
 
 if TYPE_CHECKING:
-    from reporag.api import CodeRAG
+    from reporag.api import RepoRAG
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +56,7 @@ class _Handler(FileSystemEventHandler):
 
 
 def watch(
-    cr: "CodeRAG",
+    cr: "RepoRAG",
     debounce: float = 0.5,
     stop_event: Optional[threading.Event] = None,
 ) -> None:
@@ -89,7 +89,7 @@ def watch(
         observer.join()
 
 
-def _apply(cr: "CodeRAG", raw: str) -> None:
+def _apply(cr: "RepoRAG", raw: str) -> None:
     path = Path(raw)
     try:
         if path.exists():

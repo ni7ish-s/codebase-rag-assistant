@@ -1,8 +1,8 @@
-"""The public CodeRAG facade — the one object every surface (CLI, HTTP, UI) routes through.
+"""The public RepoRAG facade — the one object every surface (CLI, HTTP, UI) routes through.
 
 Holds the wired-together engine: embedding provider, the ChromaDB store (chunk metadata +
 text/BM25 + vectors/ANN in one place), the indexer, and the hybrid searcher. Collaborators
-are built lazily so constructing a ``CodeRAG`` is cheap and importing this module pulls in no
+are built lazily so constructing a ``RepoRAG`` is cheap and importing this module pulls in no
 heavy dependencies.
 """
 
@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # avoid import-time cost / cycles
 logger = logging.getLogger(__name__)
 
 
-class CodeRAG:
+class RepoRAG:
     """High-level entry point for indexing and searching a codebase."""
 
     def __init__(self, config: Optional[Config] = None) -> None:
@@ -231,8 +231,6 @@ class CodeRAG:
             "index_type": self.store.index_kind,
             "rerank": self.config.rerank,
             "rerank_model": self.config.rerank_model if self.config.rerank else "",
-            "adaptive_fusion": self.config.adaptive_fusion,
-            "graph_expansion": self.config.graph_expansion,
             "store_dir": str(self.config.store_dir),
             "watched_dir": str(self.config.watched_dir),
             "total_files": stats.total_files,

@@ -1,6 +1,6 @@
 """Opt-in OpenAI (and OpenAI-compatible) embedding provider.
 
-Unlike the old CodeRAG, this embeds each chunk independently (no file-level averaging) and
+Unlike the old RepoRAG, this embeds each chunk independently (no file-level averaging) and
 batches requests for throughput. The client and dimension are resolved lazily.
 
 Setting ``base_url`` points the same client at a self-hosted / local OpenAI-compatible
