@@ -220,7 +220,7 @@ class Config:
     # Off by default so the zero-config engine stays tiny/fast. When on, the top
     # ``rerank_candidates`` fused hits are re-scored by a local cross-encoder and reordered.
     rerank: bool = False
-    rerank_model: str = "Xenova/ms-marco-MiniLM-L-12-v2"  # local ONNX cross-encoder
+    rerank_model: str = "cross-encoder/ms-marco-MiniLM-L-12-v2"  # sentence-transformers cross-encoder
     rerank_candidates: int = 50  # fused hits to rerank before trimming to top_k
 
     # --- Indexing throughput ---

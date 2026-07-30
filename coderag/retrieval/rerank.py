@@ -3,12 +3,10 @@
 First-stage hybrid retrieval (dense + BM25 + RRF) is tuned for *recall* — get the right
 chunks into a candidate pool cheaply. A cross-encoder reranker then scores each candidate
 *jointly* with the query (not via independent embeddings), which is far more precise at the
-top of the list. The research finds this is the single highest-ROI accuracy add-on for a
-local engine: +5–15 nDCG/MRR for ~30 ms/query on CPU with a small ONNX model.
+top of the list.
 
-It's **opt-in** (``config.rerank``) so the zero-config default stays tiny and fast. The
-default model — ``Xenova/ms-marco-MiniLM-L-12-v2`` (~0.12 GB ONNX) — runs locally via
-fastembed's ``TextCrossEncoder``, so enabling it needs no API key and no new dependency.
+It's **opt-in** (``config.rerank``). Backed by sentence-transformers' ``CrossEncoder``
+(PyTorch), matching the same backend used for the embedding provider.
 """
 
 from __future__ import annotations
@@ -22,7 +20,7 @@ from coderag.config import Config
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_RERANK_MODEL = "Xenova/ms-marco-MiniLM-L-12-v2"
+DEFAULT_RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-12-v2"
 
 
 @runtime_checkable
@@ -38,7 +36,7 @@ class Reranker(Protocol):
 
 
 class CrossEncoderReranker:
-    """Local cross-encoder reranker backed by fastembed's ``TextCrossEncoder`` (ONNX)."""
+    """Local cross-encoder reranker backed by sentence-transformers' ``CrossEncoder``."""
 
     name = "cross-encoder"
 
@@ -50,10 +48,10 @@ class CrossEncoderReranker:
 
     @cached_property
     def _encoder(self) -> Any:
-        from fastembed.rerank.cross_encoder import TextCrossEncoder
+        from sentence_transformers import CrossEncoder
 
         logger.info("Loading reranker %s ...", self._model_name)
-        return TextCrossEncoder(self._model_name, cache_dir=self._cache_dir)
+        return CrossEncoder(self._model_name, cache_folder=self._cache_dir)
 
     @property
     def model_id(self) -> str:
@@ -62,7 +60,9 @@ class CrossEncoderReranker:
     def rerank(self, query: str, documents: Sequence[str]) -> List[float]:
         if not documents:
             return []
-        return [float(s) for s in self._encoder.rerank(query, list(documents))]
+        pairs = [[query, doc] for doc in documents]
+        scores = self._encoder.predict(pairs)
+        return [float(s) for s in scores]
 
 
 def get_reranker(config: Config) -> Optional[Reranker]:
