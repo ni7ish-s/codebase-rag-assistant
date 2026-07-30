@@ -39,7 +39,7 @@ class EmbeddingProvider(Protocol):
 def get_provider(config: Config) -> EmbeddingProvider:
     """Construct the embedding provider named by ``config.provider``.
 
-    Heavy backends (fastembed/openai) are imported lazily so that ``coderag --help`` and
+    Heavy backends (fastembed/openai) are imported lazily so that ``reporag --help`` and
     the ``fake`` provider used in tests stay dependency-light and instant.
     """
     provider = config.provider.lower()

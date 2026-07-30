@@ -4,12 +4,12 @@ Lets custom apps, remote frontends, or a shared team deployment query a big code
 the network. Endpoints: ``GET /search``, ``POST /index``, ``GET /status``, ``GET /file``.
 
 Security: the API can read indexed source and file contents, so it is **opt-in
-authenticated**. Set ``CODERAG_API_KEY`` (``config.api_key``) and every request must then
+authenticated**. Set ``REPORAG_API_KEY`` (``config.api_key``) and every request must then
 present ``Authorization: Bearer <key>`` or ``X-API-Key: <key>`` — except ``GET /status``,
 the health-probe target, which stays unauthenticated so a key-protected server can still
 pass its own liveness/readiness checks (it exposes only coarse index stats). With no key
 configured there is no auth — only safe for trusted, loopback-only use. CORS is disabled
-unless ``CODERAG_CORS_ORIGINS`` lists explicit origins (never ``*``).
+unless ``REPORAG_CORS_ORIGINS`` lists explicit origins (never ``*``).
 
 Note: this module intentionally does NOT use ``from __future__ import annotations`` — FastAPI
 must see the real Pydantic model classes (not stringized annotations) to bind request bodies.
@@ -45,7 +45,7 @@ def create_app(cr: "CodeRAG") -> "FastAPI":
 
         ``GET /status`` is intentionally exempt: it is the liveness/health probe
         target (container probes, the Docker HEALTHCHECK, and readiness gates all
-        hit it), so requiring auth here would make a server with CODERAG_API_KEY
+        hit it), so requiring auth here would make a server with REPORAG_API_KEY
         set never pass its own health checks. It exposes only coarse index stats,
         never source or file contents.
         """
@@ -143,7 +143,7 @@ def run_server(cr: "CodeRAG", host: str = "127.0.0.1", port: int = 8000) -> None
         logger.warning(
             "CodeRAG HTTP API is binding to %s with NO API key set. It is "
             "UNAUTHENTICATED and exposes indexed source and file reads to anyone who "
-            "can reach this port. Set CODERAG_API_KEY to require authentication.",
+            "can reach this port. Set REPORAG_API_KEY to require authentication.",
             host,
         )
     # Warm the index/provider AND the embedding model (loads the model + JITs the query

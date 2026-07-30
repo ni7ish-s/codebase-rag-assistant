@@ -2,7 +2,7 @@
 
 Public API::
 
-    from coderag import CodeRAG, Config
+    from reporag import CodeRAG, Config
 
     cr = CodeRAG(Config.from_env(watched_dir="/path/to/repo"))
     cr.index()
@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING
 from reporag.config import Config
 
 if TYPE_CHECKING:
-    # Re-exported lazily at runtime via __getattr__ below (keeps ``import coderag``
+    # Re-exported lazily at runtime via __getattr__ below (keeps ``import reporag``
     # light — no chromadb/fastembed pulled in at import). Declared here only so type
     # checkers and static analysis see ``CodeRAG`` as a defined export of __all__.
     from reporag.api import CodeRAG
@@ -28,7 +28,7 @@ __all__ = ["CodeRAG", "Config", "__version__"]
 
 
 def __getattr__(name: str) -> object:
-    # Lazy re-export so ``import coderag`` stays light (no chromadb/fastembed at import).
+    # Lazy re-export so ``import reporag`` stays light (no chromadb/fastembed at import).
     if name == "CodeRAG":
         from reporag.api import CodeRAG
 

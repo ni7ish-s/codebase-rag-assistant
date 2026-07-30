@@ -1,6 +1,6 @@
-"""The ``coderag`` command — index, search, watch, serve, ui, status.
+"""The ``reporag`` command — index, search, watch, serve, ui, status.
 
-Every subcommand is a thin adapter over :class:`coderag.api.CodeRAG`.
+Every subcommand is a thin adapter over :class:`reporag.api.CodeRAG`.
 """
 
 from __future__ import annotations
@@ -70,7 +70,7 @@ def cmd_search(args: argparse.Namespace) -> int:
         print(json.dumps([h.as_dict() for h in hits], indent=2))
         return 0 if hits else 1
     if not hits:
-        print("No results. Has the codebase been indexed? Try: coderag index")
+        print("No results. Has the codebase been indexed? Try: reporag index")
         return 1
     for i, h in enumerate(hits, 1):
         label = f" ({h.symbol})" if h.symbol else ""
@@ -108,14 +108,14 @@ def cmd_eval(args: argparse.Namespace) -> int:
 
     cfg = _build_config(args)
 
-    # `coderag eval --list-models` — show recommended local embedding models.
+    # `reporag eval --list-models` — show recommended local embedding models.
     if args.list_models:
         from reporag.embeddings.models import format_models
 
         print(format_models())
         return 0
 
-    # `coderag eval build` — mine a dataset from the repo's git history.
+    # `reporag eval build` — mine a dataset from the repo's git history.
     if args.build:
         from reporag.chunking.languages import extensions_for
 
@@ -125,7 +125,7 @@ def cmd_eval(args: argparse.Namespace) -> int:
             extensions=extensions_for(cfg.languages),
             symbols=args.level == "symbol",
         )
-        out = args.dataset or "coderag-eval.jsonl"
+        out = args.dataset or "reporag-eval.jsonl"
         ev.save_dataset(cases, out)
         print(f"Wrote {len(cases)} eval case(s) to {out}")
         return 0 if cases else 1
@@ -203,7 +203,7 @@ def cmd_serve(args: argparse.Namespace) -> int:
         from reporag.surfaces.http_api import run_server
     except ImportError:
         print(
-            "The HTTP server needs extra deps. Install with: pip install 'coderag[server]'"
+            "The HTTP server needs extra deps. Install with: pip install 'reporag[server]'"
         )
         return 1
     cr = CodeRAG(_build_config(args))
@@ -216,7 +216,7 @@ def cmd_mcp(args: argparse.Namespace) -> int:
         from reporag.surfaces.mcp_server import run_mcp
     except ImportError:
         print(
-            "The MCP server needs extra deps. Install with: pip install 'coderag[mcp]'"
+            "The MCP server needs extra deps. Install with: pip install 'reporag[mcp]'"
         )
         return 1
     cfg = _build_config(args)
@@ -237,9 +237,9 @@ def _confirm(prompt: str) -> bool:
 
 
 _NEXT_STEPS = {
-    "claude": "Restart Claude Code (or run `claude mcp list`) to load coderag.",
-    "hermes": "Restart Hermes (or run `hermes mcp list`) to load coderag.",
-    "codex": "Restart Codex to load the coderag MCP server.",
+    "claude": "Restart Claude Code (or run `claude mcp list`) to load reporag.",
+    "hermes": "Restart Hermes (or run `hermes mcp list`) to load reporag.",
+    "codex": "Restart Codex to load the reporag MCP server.",
 }
 
 
@@ -255,7 +255,7 @@ def cmd_install(args: argparse.Namespace) -> int:
     explicit_watched = Path(args.watched_dir).expanduser() if args.watched_dir else None
     interactive = sys.stdin.isatty()
 
-    # Bare `coderag install` on a terminal → the friendly wizard; otherwise the stable
+    # Bare `reporag install` on a terminal → the friendly wizard; otherwise the stable
     # auto-detect default (and never prompt when there is no TTY, e.g. in CI).
     use_wizard = args.wizard or (
         args.target is None and not args.yes and not args.print and interactive
@@ -270,7 +270,7 @@ def cmd_install(args: argparse.Namespace) -> int:
         if not targets:
             print(
                 "No supported agents detected. Pass a target (claude|hermes|codex) "
-                "or run `coderag install --wizard`."
+                "or run `reporag install --wizard`."
             )
             return 1
         plans = [
@@ -334,12 +334,12 @@ def cmd_install(args: argparse.Namespace) -> int:
         "  runs in the background, so search works right away and fills in as it goes —\n"
         "  seconds for a repo. Large trees (a whole home/system) are supported too; the\n"
         "  first pass just takes longer. It skips version-control, build, and dependency\n"
-        "  directories automatically (see `coderag index --help` for throughput options)."
+        "  directories automatically (see `reporag index --help` for throughput options)."
     )
     print("\nHandy commands:")
-    print(f"  coderag status --watched-dir {wd}   # totals + where the index lives")
+    print(f"  reporag status --watched-dir {wd}   # totals + where the index lives")
     print(
-        f"  coderag index  --watched-dir {wd}   # build/refresh it now, with progress"
+        f"  reporag index  --watched-dir {wd}   # build/refresh it now, with progress"
     )
     return 0 if all(r.action != "error" for r in final) else 1
 
@@ -348,11 +348,11 @@ def cmd_ui(args: argparse.Namespace) -> int:
     try:
         from reporag.surfaces.webui import run_ui
     except ImportError:
-        print("The web UI needs extra deps. Install with: pip install 'coderag[ui]'")
+        print("The web UI needs extra deps. Install with: pip install 'reporag[ui]'")
         return 1
     cr = CodeRAG(_build_config(args))
-    host = args.host or os.getenv("CODERAG_UI_HOST") or "127.0.0.1"
-    port = args.port if args.port is not None else _env_port("CODERAG_UI_PORT", 8501)
+    host = args.host or os.getenv("REPORAG_UI_HOST") or "127.0.0.1"
+    port = args.port if args.port is not None else _env_port("REPORAG_UI_PORT", 8501)
     run_ui(cr, host=host, port=port)
     return 0
 
@@ -369,7 +369,7 @@ def _add_common(p: argparse.ArgumentParser) -> None:
     p.add_argument("--watched-dir", help="Codebase root to index/search.")
     p.add_argument(
         "--store-dir",
-        help="Where the index/database live (default <watched-dir>/.coderag).",
+        help="Where the index/database live (default <watched-dir>/.reporag).",
     )
     p.add_argument(
         "--provider",
@@ -394,10 +394,10 @@ def _add_common(p: argparse.ArgumentParser) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="coderag",
+        prog="reporag",
         description="Standalone, local-first semantic code-search engine.",
     )
-    parser.add_argument("--version", action="version", version=f"coderag {__version__}")
+    parser.add_argument("--version", action="version", version=f"reporag {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_index = sub.add_parser(
@@ -441,7 +441,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_eval.add_argument(
         "--build",
         action="store_true",
-        help="Mine a dataset from git history into --dataset (default coderag-eval.jsonl).",
+        help="Mine a dataset from git history into --dataset (default reporag-eval.jsonl).",
     )
     p_eval.add_argument(
         "--max-cases",
@@ -569,10 +569,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_ui.add_argument(
         "--host",
         default=None,
-        help="Bind address (default 127.0.0.1 / CODERAG_UI_HOST).",
+        help="Bind address (default 127.0.0.1 / REPORAG_UI_HOST).",
     )
     p_ui.add_argument(
-        "--port", type=int, default=None, help="Port (default 8501 / CODERAG_UI_PORT)."
+        "--port", type=int, default=None, help="Port (default 8501 / REPORAG_UI_PORT)."
     )
     _add_common(p_ui)
     p_ui.set_defaults(func=cmd_ui)

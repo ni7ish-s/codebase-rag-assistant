@@ -9,7 +9,7 @@ search instead — modelled on the Hermes agent's ``search_files`` tool (ripgrep
 pagination, secret redaction).
 
 Design: candidate files are always enumerated in Python, honouring CodeRAG's own
-``ignore_globs`` via :mod:`coderag._ignore` (so the search sees exactly the same
+``ignore_globs`` via :mod:`reporag._ignore` (so the search sees exactly the same
 workspace the indexer does). When ripgrep is on PATH it scans that explicit file list
 for the content case — a genuine speed-up with *no* divergence in which files are
 searched, since rg is handed the paths directly. Without ripgrep, a pure-Python scan

@@ -32,8 +32,8 @@ node_modules/
 *.faiss
 *.faiss.kind
 
-# Ignore the CodeRAG store (SQLite db + index live here by default)
-.coderag/
+chroma_db/
+chroma_db_*/
 
 # Ignore Git directory
 .git/

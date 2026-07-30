@@ -68,7 +68,7 @@ def stream_answer(cr: "CodeRAG", query: str, top_k: int | None = None) -> Iterat
     else:
         raise RuntimeError(
             f"Unknown LLM provider {cr.config.llm_provider!r}. "
-            "Set CODERAG_LLM_PROVIDER to 'openai' or 'anthropic'."
+            "Set REPORAG_LLM_PROVIDER to 'openai' or 'anthropic'."
         )
 
 
@@ -78,7 +78,7 @@ def _stream_openai(config: Config, user: str) -> Iterator[str]:
         raise RuntimeError(
             "No answer LLM is configured. Use a local model by pointing OPENAI_BASE_URL "
             "at an Ollama/LM Studio/vLLM server (e.g. http://localhost:11434/v1) and "
-            "setting CODERAG_CHAT_MODEL — no API key needed — or set OPENAI_API_KEY for "
+            "setting REPORAG_CHAT_MODEL — no API key needed — or set OPENAI_API_KEY for "
             "OpenAI. Retrieved chunks are still available without it; see "
             "docs/configuration.md."
         )

@@ -1,7 +1,7 @@
 """Shared file-walking + ignore matching for indexing and exact filesystem search.
 
-Both the :class:`~coderag.indexer.Indexer` and the exact filesystem search
-(:mod:`coderag.fs_search`) must enumerate the *same* set of paths — skipping vendored
+Both the :class:`~reporag.indexer.Indexer` and the exact filesystem search
+(:mod:`reporag.fs_search`) must enumerate the *same* set of paths — skipping vendored
 deps, VCS directories, build output, and (optionally) anything matched by ``.gitignore`` —
 or the two would disagree about what "the workspace" is. The single :func:`walk_files`
 generator below is the one place that decision is made, so both callers stay in lock-step.

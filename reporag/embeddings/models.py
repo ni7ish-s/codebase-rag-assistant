@@ -3,7 +3,7 @@
 These are the no-API-key models worth considering for CodeRAG, with short notes on the
 accuracy/size trade-off. All are loadable via ``--model <name>`` (provider ``fastembed``).
 The numbers in the notes are external benchmark figures (see docs/research/) — run
-``coderag eval`` to measure them on *your* codebase.
+``reporag eval`` to measure them on *your* codebase.
 
 Code-specific models (trained on code) generally beat general-purpose text embedders on
 code retrieval, at the cost of a larger download.
@@ -88,7 +88,7 @@ def format_models() -> str:
         if i == 0:
             lines.append("  ".join("-" * w for w in widths) + "  " + "-" * len(r[4]))
     lines.append("")
-    lines.append("Rerankers (set CODERAG_RERANK=1, CODERAG_RERANK_MODEL=<name>):")
+    lines.append("Rerankers (set REPORAG_RERANK=1, REPORAG_RERANK_MODEL=<name>):")
     rwidth = max(len(rr.name) for rr in RECOMMENDED_RERANKERS)
     for rr in RECOMMENDED_RERANKERS:
         lines.append(f"  {rr.name.ljust(rwidth)}  {f'{rr.size_gb:g}GB':>8}  {rr.note}")
@@ -97,7 +97,7 @@ def format_models() -> str:
 
 @dataclass(frozen=True)
 class RerankerInfo:
-    name: str  # fastembed TextCrossEncoder model id (pass via CODERAG_RERANK_MODEL)
+    name: str  # fastembed TextCrossEncoder model id (pass via REPORAG_RERANK_MODEL)
     size_gb: float
     note: str
 

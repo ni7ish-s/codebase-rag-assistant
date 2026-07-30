@@ -125,7 +125,7 @@ class CodeRAG:
     def search_files(self, pattern: str, **kwargs: Any) -> dict:
         """Exact regex/glob search over the workspace (the complement to ``search``).
 
-        Thin pass-through to :func:`coderag.fs_search.search_files`, wired to the
+        Thin pass-through to :func:`reporag.fs_search.search_files`, wired to the
         configured ``watched_dir`` and ``ignore_globs`` so it sees exactly the same
         files the indexer does. See that function for the keyword arguments.
         """

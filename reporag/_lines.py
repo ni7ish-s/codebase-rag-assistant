@@ -1,7 +1,7 @@
 """The canonical line-splitting convention, shared by the chunker and file readers.
 
 Chunk ``start_line``/``end_line`` are 1-based indices into ``split_lines(text)``. Any
-consumer that maps those numbers back to text (e.g. :meth:`coderag.api.CodeRAG.get_file`)
+consumer that maps those numbers back to text (e.g. :meth:`reporag.api.CodeRAG.get_file`)
 MUST split the same way, so this lives in one place to prevent the two from drifting.
 """
 

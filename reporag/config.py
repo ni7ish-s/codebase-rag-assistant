@@ -52,7 +52,7 @@ DEFAULT_IGNORE_GLOBS: Tuple[str, ...] = (
     ".ipynb_checkpoints/*",
     ".gradle/*",
     ".terraform/*",
-    ".coderag/*",
+    ".reporag/*",
     # virtualenvs / vendored dependencies
     ".venv/*",
     "venv/*",
@@ -116,7 +116,7 @@ def _env_path(key: str, default: Path) -> Path:
 def _env_path_opt(key: str) -> Path | None:
     """Like :func:`_env_path` but returns ``None`` when the var is unset/blank.
 
-    Used for ``store_dir`` so an absent ``CODERAG_STORE_DIR`` leaves it unset and lets it be
+    Used for ``store_dir`` so an absent ``REPORAG_STORE_DIR`` leaves it unset and lets it be
     derived from ``watched_dir`` (see :meth:`Config.__post_init__`) rather than the cwd.
     """
     raw = os.getenv(key)
@@ -147,17 +147,17 @@ class Config:
     # LM Studio, LocalAI, text-embeddings-inference, …). Used for both embeddings and the
     # ``openai`` answer backend. When set, an API key is optional.
     openai_base_url: str | None = None
-    cache_dir: Path = field(default_factory=lambda: Path.home() / ".cache" / "coderag")
+    cache_dir: Path = field(default_factory=lambda: Path.home() / ".cache" / "reporag")
 
     # --- Locations ---
     watched_dir: Path = field(default_factory=Path.cwd)
-    # Defaults to ``<watched_dir>/.coderag`` (resolved in ``__post_init__``), so the index
+    # Defaults to ``<watched_dir>/.reporag`` (resolved in ``__post_init__``), so the index
     # lives next to the code it indexes. It deliberately does NOT default to the *current
     # working directory*: a cwd-relative store silently pointed at a different (often empty)
-    # ``.coderag`` whenever a command ran from a directory other than the one indexed — e.g.
-    # ``coderag index --watched-dir /home/me`` would write to ``/home/me/.coderag`` only if
-    # you happened to be standing in ``/home/me``, and ``coderag status`` from elsewhere then
-    # found nothing. Set it explicitly with ``--store-dir`` / ``CODERAG_STORE_DIR`` to override.
+    # ``.reporag`` whenever a command ran from a directory other than the one indexed — e.g.
+    # ``reporag index --watched-dir /home/me`` would write to ``/home/me/.reporag`` only if
+    # you happened to be standing in ``/home/me``, and ``reporag status`` from elsewhere then
+    # found nothing. Set it explicitly with ``--store-dir`` / ``REPORAG_STORE_DIR`` to override.
     store_dir: Path = None  # type: ignore[assignment]  # filled in by __post_init__
 
     # --- What to index ---
@@ -165,11 +165,11 @@ class Config:
     ignore_globs: Tuple[str, ...] = DEFAULT_IGNORE_GLOBS
     # Honor .gitignore files while walking (in addition to ignore_globs), so a repo's own
     # build/output exclusions are respected. On by default; disable with
-    # CODERAG_GITIGNORE=0 or `--no-gitignore`.
+    # REPORAG_GITIGNORE=0 or `--no-gitignore`.
     use_gitignore: bool = True
     # Index any UTF-8-decodable file as plain text, even with an unknown/absent extension
     # (Dockerfile, Makefile, LICENSE, .log, ...). Off by default so code repos aren't
-    # polluted; turn on (CODERAG_INDEX_ALL_TEXT / `coderag mcp --all-text`) to make
+    # polluted; turn on (REPORAG_INDEX_ALL_TEXT / `reporag mcp --all-text`) to make
     # CodeRAG a general document/file-directory search engine. Binary files are still
     # skipped (NUL-byte sniff in the indexer).
     index_all_text: bool = False
@@ -244,7 +244,7 @@ class Config:
     # --- HTTP API server (optional [server] surface) ---
     # When set, the HTTP API requires this key on every request (Authorization:
     # ``Bearer <key>`` or the ``X-API-Key`` header). Unset => no auth, which is only
-    # safe for trusted, loopback-only local use. ALWAYS set this (via CODERAG_API_KEY)
+    # safe for trusted, loopback-only local use. ALWAYS set this (via REPORAG_API_KEY)
     # when binding to a non-loopback host, e.g. in the container/Helm deployment.
     api_key: str | None = field(default=None, repr=False)  # secret: no repr
     # Explicit CORS allowlist for the HTTP API. Empty => no cross-origin browser
@@ -253,7 +253,7 @@ class Config:
     cors_origins: Tuple[str, ...] = ()
 
     # --- MCP server surface (optional [mcp] surface) ---
-    # `coderag mcp` runs a persistent, warm process so the embedding model loads once and
+    # `reporag mcp` runs a persistent, warm process so the embedding model loads once and
     # every query is fast — the win over an agent's cold, repeated grep/read loop. By
     # default it indexes the watched dir on startup (in the background, so the server is
     # responsive immediately) and keeps it live via the filesystem watcher, so an agent
@@ -268,7 +268,7 @@ class Config:
     # When on, the Streamlit UI shows a notice, hides the Reindex button, and limits
     # LLM answers per browser session. The per-session limit is soft (session-state
     # based); pair it with an Ollama concurrency cap (OLLAMA_NUM_PARALLEL) for a hard
-    # GPU backstop. Also lower CODERAG_ANSWER_MAX_TOKENS to keep each answer cheap.
+    # GPU backstop. Also lower REPORAG_ANSWER_MAX_TOKENS to keep each answer cheap.
     demo_mode: bool = False
     demo_max_answers: int = 5  # LLM answers allowed per browser session
     demo_cooldown_seconds: int = 20  # minimum seconds between answers in a session
@@ -280,7 +280,7 @@ class Config:
         # ``watched_dir`` without a ``store_dir`` re-derives the store from the new watched dir.
         if self.store_dir is None:
             # Frozen dataclass: assign through object.__setattr__.
-            object.__setattr__(self, "store_dir", self.watched_dir / ".coderag")
+            object.__setattr__(self, "store_dir", self.watched_dir / ".reporag")
 
     def with_overrides(self, **kwargs: object) -> "Config":
         """Return a copy with the given fields replaced (config stays immutable).
@@ -295,7 +295,7 @@ class Config:
         if (
             "watched_dir" in kwargs
             and "store_dir" not in kwargs
-            and self.store_dir == self.watched_dir / ".coderag"
+            and self.store_dir == self.watched_dir / ".reporag"
         ):
             kwargs = {**kwargs, "store_dir": None}
         return replace(self, **kwargs)  # type: ignore[arg-type]
@@ -305,68 +305,68 @@ class Config:
         """Build a Config from environment / .env, applying explicit overrides last."""
         load_dotenv()
         base = cls(
-            provider=_env_str("CODERAG_PROVIDER", cls.provider),
-            model=_env_str("CODERAG_MODEL", cls.model),
-            openai_model=_env_str("CODERAG_OPENAI_MODEL", cls.openai_model),
+            provider=_env_str("REPORAG_PROVIDER", cls.provider),
+            model=_env_str("REPORAG_MODEL", cls.model),
+            openai_model=_env_str("REPORAG_OPENAI_MODEL", cls.openai_model),
             openai_api_key=os.getenv("OPENAI_API_KEY"),
             openai_base_url=os.getenv("OPENAI_BASE_URL"),
             cache_dir=_env_path(
-                "CODERAG_CACHE_DIR", Path.home() / ".cache" / "coderag"
+                "REPORAG_CACHE_DIR", Path.home() / ".cache" / "reporag"
             ),
-            watched_dir=_env_path("CODERAG_WATCHED_DIR", Path.cwd()),
+            watched_dir=_env_path("REPORAG_WATCHED_DIR", Path.cwd()),
             # None => derived from watched_dir in __post_init__ (never the cwd).
-            store_dir=_env_path_opt("CODERAG_STORE_DIR"),  # type: ignore[arg-type]
-            top_k=_env_int("CODERAG_TOP_K", cls.top_k),
-            fetch_k=_env_int("CODERAG_FETCH_K", cls.fetch_k),
-            rrf_k=_env_int("CODERAG_RRF_K", cls.rrf_k),
-            dense_weight=_env_float("CODERAG_DENSE_WEIGHT", cls.dense_weight),
-            lexical_weight=_env_float("CODERAG_LEXICAL_WEIGHT", cls.lexical_weight),
-            adaptive_fusion=_env_bool("CODERAG_ADAPTIVE_FUSION", cls.adaptive_fusion),
-            nl_dense_weight=_env_float("CODERAG_NL_DENSE_WEIGHT", cls.nl_dense_weight),
+            store_dir=_env_path_opt("REPORAG_STORE_DIR"),  # type: ignore[arg-type]
+            top_k=_env_int("REPORAG_TOP_K", cls.top_k),
+            fetch_k=_env_int("REPORAG_FETCH_K", cls.fetch_k),
+            rrf_k=_env_int("REPORAG_RRF_K", cls.rrf_k),
+            dense_weight=_env_float("REPORAG_DENSE_WEIGHT", cls.dense_weight),
+            lexical_weight=_env_float("REPORAG_LEXICAL_WEIGHT", cls.lexical_weight),
+            adaptive_fusion=_env_bool("REPORAG_ADAPTIVE_FUSION", cls.adaptive_fusion),
+            nl_dense_weight=_env_float("REPORAG_NL_DENSE_WEIGHT", cls.nl_dense_weight),
             nl_lexical_weight=_env_float(
-                "CODERAG_NL_LEXICAL_WEIGHT", cls.nl_lexical_weight
+                "REPORAG_NL_LEXICAL_WEIGHT", cls.nl_lexical_weight
             ),
             code_dense_weight=_env_float(
-                "CODERAG_CODE_DENSE_WEIGHT", cls.code_dense_weight
+                "REPORAG_CODE_DENSE_WEIGHT", cls.code_dense_weight
             ),
             code_lexical_weight=_env_float(
-                "CODERAG_CODE_LEXICAL_WEIGHT", cls.code_lexical_weight
+                "REPORAG_CODE_LEXICAL_WEIGHT", cls.code_lexical_weight
             ),
-            graph_expansion=_env_bool("CODERAG_GRAPH_EXPANSION", cls.graph_expansion),
-            graph_seeds=_env_int("CODERAG_GRAPH_SEEDS", cls.graph_seeds),
-            graph_neighbors=_env_int("CODERAG_GRAPH_NEIGHBORS", cls.graph_neighbors),
-            graph_weight=_env_float("CODERAG_GRAPH_WEIGHT", cls.graph_weight),
-            rerank=_env_bool("CODERAG_RERANK", cls.rerank),
-            rerank_model=_env_str("CODERAG_RERANK_MODEL", cls.rerank_model),
+            graph_expansion=_env_bool("REPORAG_GRAPH_EXPANSION", cls.graph_expansion),
+            graph_seeds=_env_int("REPORAG_GRAPH_SEEDS", cls.graph_seeds),
+            graph_neighbors=_env_int("REPORAG_GRAPH_NEIGHBORS", cls.graph_neighbors),
+            graph_weight=_env_float("REPORAG_GRAPH_WEIGHT", cls.graph_weight),
+            rerank=_env_bool("REPORAG_RERANK", cls.rerank),
+            rerank_model=_env_str("REPORAG_RERANK_MODEL", cls.rerank_model),
             rerank_candidates=_env_int(
-                "CODERAG_RERANK_CANDIDATES", cls.rerank_candidates
+                "REPORAG_RERANK_CANDIDATES", cls.rerank_candidates
             ),
-            embed_batch_size=_env_int("CODERAG_EMBED_BATCH", cls.embed_batch_size),
-            index_workers=_env_int("CODERAG_WORKERS", cls.index_workers),
-            embed_device=_env_str("CODERAG_EMBED_DEVICE", cls.embed_device),
-            embed_threads=_env_int("CODERAG_EMBED_THREADS", cls.embed_threads),
-            llm_provider=_env_str("CODERAG_LLM_PROVIDER", cls.llm_provider),
-            chat_model=_env_str("CODERAG_CHAT_MODEL", cls.chat_model),
+            embed_batch_size=_env_int("REPORAG_EMBED_BATCH", cls.embed_batch_size),
+            index_workers=_env_int("REPORAG_WORKERS", cls.index_workers),
+            embed_device=_env_str("REPORAG_EMBED_DEVICE", cls.embed_device),
+            embed_threads=_env_int("REPORAG_EMBED_THREADS", cls.embed_threads),
+            llm_provider=_env_str("REPORAG_LLM_PROVIDER", cls.llm_provider),
+            chat_model=_env_str("REPORAG_CHAT_MODEL", cls.chat_model),
             anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
-            anthropic_model=_env_str("CODERAG_ANTHROPIC_MODEL", cls.anthropic_model),
+            anthropic_model=_env_str("REPORAG_ANTHROPIC_MODEL", cls.anthropic_model),
             answer_max_tokens=_env_int(
-                "CODERAG_ANSWER_MAX_TOKENS", cls.answer_max_tokens
+                "REPORAG_ANSWER_MAX_TOKENS", cls.answer_max_tokens
             ),
-            api_key=os.getenv("CODERAG_API_KEY"),
-            cors_origins=_env_tuple("CODERAG_CORS_ORIGINS", cls.cors_origins),
-            index_all_text=_env_bool("CODERAG_INDEX_ALL_TEXT", cls.index_all_text),
-            # CODERAG_IGNORE_GLOBS *appends* extra excludes to the built-in defaults.
-            ignore_globs=DEFAULT_IGNORE_GLOBS + _env_tuple("CODERAG_IGNORE_GLOBS", ()),
-            use_gitignore=_env_bool("CODERAG_GITIGNORE", cls.use_gitignore),
-            mcp_auto_index=_env_bool("CODERAG_MCP_AUTO_INDEX", cls.mcp_auto_index),
-            mcp_watch=_env_bool("CODERAG_MCP_WATCH", cls.mcp_watch),
+            api_key=os.getenv("REPORAG_API_KEY"),
+            cors_origins=_env_tuple("REPORAG_CORS_ORIGINS", cls.cors_origins),
+            index_all_text=_env_bool("REPORAG_INDEX_ALL_TEXT", cls.index_all_text),
+            # REPORAG_IGNORE_GLOBS *appends* extra excludes to the built-in defaults.
+            ignore_globs=DEFAULT_IGNORE_GLOBS + _env_tuple("REPORAG_IGNORE_GLOBS", ()),
+            use_gitignore=_env_bool("REPORAG_GITIGNORE", cls.use_gitignore),
+            mcp_auto_index=_env_bool("REPORAG_MCP_AUTO_INDEX", cls.mcp_auto_index),
+            mcp_watch=_env_bool("REPORAG_MCP_WATCH", cls.mcp_watch),
             mcp_snippet_lines=_env_int(
-                "CODERAG_MCP_SNIPPET_LINES", cls.mcp_snippet_lines
+                "REPORAG_MCP_SNIPPET_LINES", cls.mcp_snippet_lines
             ),
-            demo_mode=_env_bool("CODERAG_DEMO_MODE", cls.demo_mode),
-            demo_max_answers=_env_int("CODERAG_DEMO_MAX_ANSWERS", cls.demo_max_answers),
+            demo_mode=_env_bool("REPORAG_DEMO_MODE", cls.demo_mode),
+            demo_max_answers=_env_int("REPORAG_DEMO_MAX_ANSWERS", cls.demo_max_answers),
             demo_cooldown_seconds=_env_int(
-                "CODERAG_DEMO_COOLDOWN_SECONDS", cls.demo_cooldown_seconds
+                "REPORAG_DEMO_COOLDOWN_SECONDS", cls.demo_cooldown_seconds
             ),
         )
         if overrides:

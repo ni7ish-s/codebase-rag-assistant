@@ -4,7 +4,7 @@ Mirrors the FastEmbedProvider interface so it's a drop-in swap: same
 ``name`` / ``model_id`` / ``dim`` / ``embed_documents`` / ``embed_query``
 contract, just backed by sentence-transformers instead of ONNX/fastembed.
 
-The model is loaded lazily on first use so commands like ``coderag --help``
+The model is loaded lazily on first use so commands like ``reporag --help``
 or ``status`` stay fast and never trigger a model download.
 """
 
