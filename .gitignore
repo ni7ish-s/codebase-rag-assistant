@@ -29,8 +29,6 @@ venv/
 node_modules/
 
 # Ignore FAISS index file
-*.faiss
-*.faiss.kind
 
 chroma_db/
 chroma_db_*/
